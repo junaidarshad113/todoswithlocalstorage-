@@ -1,25 +1,67 @@
-import logo from './logo.svg';
+import {useEffect , useState } from 'react';
 import './App.css';
+import Footer from './components/Footer';
+import Form from './components/Form';
+import Header from './components/Header';
+import TodoList from './components/TodoList';
+const getData=()=>{
+  const data =localStorage.getItem('todos');
+  if(data){
+    return JSON.parse(data)
+    
+  }
+  else
+  {
+    return []
+  }
 
+}
 function App() {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [todos,setTodos]=useState(getData());
+  
+//useEffect(()=>{
+  //setTodos(JSON.parse(window.localStorage.getItem('todos')));
+//}, []);
+
+//useEffect(()=>{
+  //window.localStorage.setItem('todos',todos);
+//}, [todos] );
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    e.target.reset();
+   
+    let todo={
+        title:title,
+        description:description
+    }
+    setTodos([...todos,todo])
+  };
+  useEffect(()=>{
+    localStorage.setItem('todos',JSON.stringify(todos))
+  },[todos])
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div >
+      <Header 
+      todoCount={todos.length}/>
+      <Form
+      handleSubmit={handleSubmit} 
+      setTitle={setTitle}
+      setDescription={setDescription}
+      title={title}
+      description={description}
+      todos={todos}
+      
+      />
+      <TodoList
+       todos={todos}
+      />
+      <Footer/>
+      
+
+      
     </div>
   );
 }
-
 export default App;
